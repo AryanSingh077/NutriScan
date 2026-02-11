@@ -58,15 +58,12 @@ async function fetchData(barcode) {
             statusText.innerText = "✅ Analysis Complete"; 
             resultCard.style.display = "block";
             
-            // 1. DATA FALLBACKS (If name or brand is missing)
             document.getElementById("product-name").innerText = product.product_name || "Unknown Product";
             document.getElementById("product-brand").innerText = product.brands || "Brand Not Listed";
 
-            // 2. IMAGE FALLBACK
             const imgElement = document.getElementById("product-img");
             imgElement.src = product.image_url || product.image_front_url || "https://via.placeholder.com/150?text=No+Photo+Available";
 
-            // 3. NUTRITION FALLBACKS (Show 'N/A' if the data is missing)
             const n = product.nutriments || {};
             
             const kcal = n['energy-kcal_100g'];
@@ -79,7 +76,6 @@ async function fetchData(barcode) {
             document.getElementById("fat-val").innerText = fat !== undefined ? fat.toFixed(1) + "g" : "N/A";
             document.getElementById("salt-val").innerText = salt !== undefined ? salt.toFixed(1) + "g" : "N/A";
 
-            // 4. TRAFFIC LIGHT (Only runs if we actually have sugar/fat data)
             const verdictBox = document.getElementById("verdict-box");
             verdictBox.className = "verdict"; 
 
