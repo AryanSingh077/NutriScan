@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriScan - Smart Food Analyzer</title>
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="logo">
+            <span>🥗</span> NutriScan
+        </div>
+        <p class="subtitle">Instant Food Analysis & Health Score</p>
+        
+        <div class="scanner-wrapper">
+            <div id="reader"></div>
+            <div id="scan-line" class="scan-line"></div>
+        </div>
+
+        <p id="status-text" class="status-text">Ready to scan.</p>
+        
+        <button id="start-btn" class="btn" onclick="startCamera()">Tap to Scan</button>
+        <button id="stop-btn" class="btn btn-stop" onclick="stopCamera()" style="display:none;">Stop Camera</button>
+        
+        <div id="result-card" class="result-card" style="display:none;">
+            <div class="product-header">
+                <img id="product-img" class="product-img" src="" alt="Product">
+                <div class="product-info">
+                    <h3 id="product-name">Loading...</h3>
+                    <p id="product-brand">Scanning...</p>
+                </div>
+            </div>
+            
+            <div class="nutrition-grid">
+                <div class="nutrient-box">
+                    <span>Energy</span>
+                    <strong id="kcal-val">0 kcal</strong>
+                </div>
+                <div class="nutrient-box">
+                    <span>Sugar</span>
+                    <strong id="sugar-val">0g</strong>
+                </div>
+                <div class="nutrient-box">
+                    <span>Fat</span>
+                    <strong id="fat-val">0g</strong>
+                </div>
+                <div class="nutrient-box">
+                    <span>Salt</span>
+                    <strong id="salt-val">0g</strong>
+                </div>
+            </div>
+            
+            <div id="verdict-box" class="verdict">
+                READY TO SCAN
+            </div>
+
+            <div id="verdict-box" class="verdict">
+                ANALYZING...
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
+

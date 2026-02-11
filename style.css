@@ -1,0 +1,207 @@
+:root {
+    --primary: #4e54c8;
+    --secondary: #8f94fb;
+    --success: #2ecc71;
+    --danger: #e74c3c;
+    --dark: #2c3e50;
+    --light: #f4f6f7;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+   
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
+    
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; 
+}
+
+.app-container {
+    background: rgba(255, 255, 255, 0.9); 
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.app-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    width: 90%;
+    max-width: 450px;
+    border-radius: 25px;
+    padding: 30px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: #7f8c8d;
+    margin-bottom: 25px;
+}
+
+.scanner-wrapper {
+    position: relative;
+    width: 100%;
+    height: 250px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.scan-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(231, 76, 60, 0.8);
+    box-shadow: 0 0 15px rgba(231, 76, 60, 0.8);
+    animation: scan 2s infinite linear;
+    z-index: 10;
+}
+
+@keyframes scan {
+    0% { top: 0%; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+}
+
+/* --- 4. BUTTONS --- */
+.status-text {
+    font-size: 14px; 
+    color: #7f8c8d; 
+    margin-bottom: 15px;
+}
+
+.btn {
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    color: white;
+    border: none;
+    padding: 15px 35px;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(78, 84, 200, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+    width: 80%;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(78, 84, 200, 0.6);
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+.result-card {
+    margin-top: 25px;
+    background: #fff;
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid #eee;
+    display: block; 
+}
+
+.product-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-align: left;
+    margin-bottom: 15px;
+}
+
+.product-img {
+    width: 70px;
+    height: 70px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 2px solid #eee;
+}
+
+.product-info h3 { margin: 0; font-size: 18px; color: var(--dark); }
+.product-info p { margin: 5px 0 0; font-size: 13px; color: #7f8c8d; }
+
+.nutrition-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.nutrient-box {
+    background: var(--light);
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+}
+.nutrient-box span { display: block; font-size: 12px; color: #7f8c8d; }
+.nutrient-box strong { font-size: 18px; color: var(--dark); }
+
+.verdict {
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.verdict.healthy { background: rgba(46, 204, 113, 0.15); color: var(--success); }
+.verdict.unhealthy { background: rgba(231, 76, 60, 0.15); color: var(--danger); }
+.verdict.moderate { background: rgba(241, 196, 15, 0.15); color: #f39c12; }
+
+#reader video {
+    transform: scaleX(-1) !important; 
+}
+
+/* Traffic Light Colors */
+.verdict.green { 
+    background: #2ecc71; 
+    color: white; 
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
+}
+.verdict.yellow { 
+    background: #f1c40f; 
+    color: #2c3e50; 
+    box-shadow: 0 4px 15px rgba(241, 196, 15, 0.4);
+}
+.verdict.red { 
+    background: #e74c3c; 
+    color: white; 
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+}
+
+.nutrition-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+}
