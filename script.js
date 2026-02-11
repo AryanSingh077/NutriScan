@@ -46,7 +46,7 @@ function stopCamera() {
 }
 
 async function fetchData(barcode) {
-    statusText.innerText = "🔍 Fetching Data..."; 
+    statusText.innerText = "🔍 Fetching Product Details...";
     resultCard.style.display = "none"; 
 
     try {
@@ -55,46 +55,57 @@ async function fetchData(barcode) {
 
         if (data.status === 1) {
             const product = data.product;
-            
-            statusText.innerText = "✅ Done!"; 
+            statusText.innerText = "✅ Analysis Complete"; 
             resultCard.style.display = "block";
             
+            // 1. DATA FALLBACKS (If name or brand is missing)
             document.getElementById("product-name").innerText = product.product_name || "Unknown Product";
-            document.getElementById("product-brand").innerText = product.brands || "Unknown Brand";
-            document.getElementById("product-img").src = product.image_url || "https://via.placeholder.com/150";
+            document.getElementById("product-brand").innerText = product.brands || "Brand Not Listed";
 
-            const n = product.nutriments;
-            const sugar = n.sugars_100g || 0;
-            const fat = n.fat_100g || 0;
-            const salt = n.salt_100g || 0;
+            // 2. IMAGE FALLBACK
+            const imgElement = document.getElementById("product-img");
+            imgElement.src = product.image_url || product.image_front_url || "https://via.placeholder.com/150?text=No+Photo+Available";
 
-            document.getElementById("kcal-val").innerText = Math.round(n['energy-kcal_100g'] || 0) + " kcal";
-            document.getElementById("sugar-val").innerText = sugar.toFixed(1) + "g";
-            document.getElementById("fat-val").innerText = fat.toFixed(1) + "g";
-            document.getElementById("salt-val").innerText = salt.toFixed(1) + "g";
+            // 3. NUTRITION FALLBACKS (Show 'N/A' if the data is missing)
+            const n = product.nutriments || {};
+            
+            const kcal = n['energy-kcal_100g'];
+            const sugar = n.sugars_100g;
+            const fat = n.fat_100g;
+            const salt = n.salt_100g;
 
+            document.getElementById("kcal-val").innerText = kcal !== undefined ? Math.round(kcal) + " kcal" : "N/A";
+            document.getElementById("sugar-val").innerText = sugar !== undefined ? sugar.toFixed(1) + "g" : "N/A";
+            document.getElementById("fat-val").innerText = fat !== undefined ? fat.toFixed(1) + "g" : "N/A";
+            document.getElementById("salt-val").innerText = salt !== undefined ? salt.toFixed(1) + "g" : "N/A";
+
+            // 4. TRAFFIC LIGHT (Only runs if we actually have sugar/fat data)
             const verdictBox = document.getElementById("verdict-box");
             verdictBox.className = "verdict"; 
-            
-            let redAlerts = [];
-            if (sugar > 15) redAlerts.push("SUGAR");
-            if (fat > 20) redAlerts.push("FAT");
-            if (salt > 1.5) redAlerts.push("SALT");
 
-            if (redAlerts.length > 0) {
-                verdictBox.innerText = `🔴 HIGH ${redAlerts.join(" & ")}: LIMIT INTAKE`;
-                verdictBox.classList.add("red");
-            } else if (sugar > 5 || fat > 3) {
-                verdictBox.innerText = "🟡 MODERATE: ENJOY IN MODERATION";
-                verdictBox.classList.add("yellow");
+            if (sugar === undefined && fat === undefined) {
+                verdictBox.innerText = "⚪ DATA INCOMPLETE";
+                verdictBox.style.background = "#95a5a6";
             } else {
-                verdictBox.innerText = "🟢 HEALTHY: GREAT CHOICE";
-                verdictBox.classList.add("green");
+                let alerts = [];
+                if (sugar > 15) alerts.push("SUGAR");
+                if (fat > 20) alerts.push("FAT");
+                
+                if (alerts.length > 0) {
+                    verdictBox.innerText = `🔴 HIGH ${alerts.join(" & ")}`;
+                    verdictBox.classList.add("red");
+                } else if (sugar > 5 || fat > 3) {
+                    verdictBox.innerText = "🟡 MODERATE CHOICE";
+                    verdictBox.classList.add("yellow");
+                } else {
+                    verdictBox.innerText = "🟢 HEALTHY CHOICE";
+                    verdictBox.classList.add("green");
+                }
             }
         } else {
-            statusText.innerText = `❌ Product ${barcode} not found.`;
+            statusText.innerText = `❌ This barcode (${barcode}) is not in our database yet.`;
         }
     } catch (err) {
-        statusText.innerText = "❌ Network Error. Check internet.";
+        statusText.innerText = "❌ Network Error. Check your connection.";
     }
 }
