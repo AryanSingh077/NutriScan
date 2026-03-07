@@ -1,74 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NutriScan - Smart Food Analyzer</title>
-    
-    <link rel="stylesheet" href="style.css">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NutriScan Pro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
 <body>
 
-    <div class="app-container">
-        <div class="logo">
-            <span>🥗</span> NutriScan
-        </div>
-        <p class="subtitle">Instant Food Analysis & Health Score</p>
-        
-        <div class="scanner-wrapper">
-            <div id="reader"></div>
-            <div id="scan-line" class="scan-line"></div>
-        </div>
+  <div class="wrapper">
 
-        <p id="status-text" class="status-text">Ready to scan.</p>
-        
-        <button id="start-btn" class="btn" onclick="startCamera()">Tap to Scan</button>
-        <button id="stop-btn" class="btn btn-stop" onclick="stopCamera()" style="display:none;">Stop Camera</button>
-        
-        <div id="result-card" class="result-card" style="display:none;">
-            <div class="product-header">
-                <img id="product-img" class="product-img" src="" alt="Product">
-                <div class="product-info">
-                    <h3 id="product-name">Loading...</h3>
-                    <p id="product-brand">Scanning...</p>
-                </div>
-            </div>
-            
-            <div class="nutrition-grid">
-                <div class="nutrient-box">
-                    <span>Energy</span>
-                    <strong id="kcal-val">0 kcal</strong>
-                </div>
-                <div class="nutrient-box">
-                    <span>Sugar</span>
-                    <strong id="sugar-val">0g</strong>
-                </div>
-                <div class="nutrient-box">
-                    <span>Fat</span>
-                    <strong id="fat-val">0g</strong>
-                </div>
-                <div class="nutrient-box">
-                    <span>Salt</span>
-                    <strong id="salt-val">0g</strong>
-                </div>
-            </div>
-            
-            <div id="verdict-box" class="verdict">
-                READY TO SCAN
-            </div>
+    <!-- HEADER -->
+    <header>
+      <div class="logo-mark">
+        <div class="logo-icon">🥗</div>
+        <div class="logo-text">Nutri<span>Scan</span></div>
+      </div>
+      <button class="history-btn" onclick="toggleHistory()">
+        <span>🕘</span> History
+      </button>
+    </header>
 
-            <div id="verdict-box" class="verdict">
-                ANALYZING...
-            </div>
+    <!-- SCANNER SECTION -->
+    <div class="scanner-section">
+      <div class="scanner-box">
+        <div id="reader"></div>
+        <div class="scan-overlay">
+          <div class="scan-corner tl"></div>
+          <div class="scan-corner tr"></div>
+          <div class="scan-corner bl"></div>
+          <div class="scan-corner br"></div>
+          <div class="scan-line" id="scan-line"></div>
         </div>
+        <div class="idle-state" id="idle-state">
+          <div class="idle-icon">📷</div>
+          <div class="idle-text">Tap to start scanning</div>
+        </div>
+      </div>
+      <div class="scanner-footer">
+        <div class="status-chip">
+          <div class="status-dot" id="status-dot"></div>
+          <span id="status-text">Ready</span>
+        </div>
+        <div class="scanner-btns">
+          <button class="scan-btn torch" id="torch-btn" onclick="toggleTorch()" style="display:none" title="Toggle torch">🔦</button>
+          <button class="scan-btn start" id="start-btn" onclick="startCamera()">📷 Scan</button>
+          <button class="scan-btn upload" id="upload-btn" onclick="triggerUpload()" title="Upload barcode image">🖼 Upload</button>
+          <button class="scan-btn stop"  id="stop-btn"  onclick="stopCamera()" style="display:none">Stop</button>
+        </div>
+      </div>
+      <!-- Hidden file input -->
+      <input type="file" id="file-input" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
+      <!-- Separate div for image-based scanning (never shown) -->
+      <div id="img-reader" style="display:none"></div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- RESULT CARD -->
+    <div class="result-card" id="result-card">
 
+      <!-- Product Header -->
+      <div class="product-hero">
+        <img class="product-img" id="product-img" src="" alt="">
+        <div class="product-details">
+          <h2 id="product-name">Loading...</h2>
+          <div class="brand" id="product-brand"></div>
+          <div class="source-badge" id="source-badge">—</div>
+        </div>
+      </div>
+
+      <!-- Nutrition Grid -->
+      <div class="nutrition-grid">
+        <div class="nutrient-cell">
+          <div class="label">Calories</div>
+          <div class="value" id="kcal-val">—</div>
+          <div class="unit">per 100g</div>
+        </div>
+        <div class="nutrient-cell">
+          <div class="label">Sugar</div>
+          <div class="value" id="sugar-val">—</div>
+          <div class="unit">grams</div>
+        </div>
+        <div class="nutrient-cell">
+          <div class="label">Fat</div>
+          <div class="value" id="fat-val">—</div>
+          <div class="unit">grams</div>
+        </div>
+        <div class="nutrient-cell">
+          <div class="label">Salt</div>
+          <div class="value" id="salt-val">—</div>
+          <div class="unit">grams</div>
+        </div>
+      </div>
+
+      <!-- Verdict Bar -->
+      <div class="verdict-bar">
+        <div class="verdict-label" id="verdict-label">—</div>
+        <div class="verdict-score" id="verdict-score">—</div>
+      </div>
+
+      <!-- Nutriscore + NOVA Row -->
+      <div class="badges-row" id="badges-row" style="display:none"></div>
+
+      <!-- Allergens -->
+      <div class="allergens-row" id="allergens-row" style="display:none"></div>
+
+      <!-- Ingredients Section -->
+      <div class="ingredients-section" id="ingredients-section" style="display:none">
+        <div class="section-header">
+          <span class="section-title">🧪 Ingredients</span>
+          <span class="ingredient-count" id="ingredient-count"></span>
+        </div>
+        <div class="ingredients-raw" id="ingredients-raw"></div>
+        <div class="ingredients-tags" id="ingredients-tags"></div>
+      </div>
+
+      <!-- AI Analysis Section -->
+      <div class="ai-section" id="ai-section" style="display:none">
+        <div class="section-header">
+          <span class="section-title">✦ AI Health Analysis</span>
+          <div class="ai-spinner" id="ai-spinner"></div>
+        </div>
+        <div class="ai-content" id="ai-content">
+          <div class="ai-loading" id="ai-loading">Analyzing ingredients with AI…</div>
+        </div>
+      </div>
+
+    </div><!-- /.result-card -->
+
+    <!-- HISTORY PANEL -->
+    <div class="history-panel" id="history-panel">
+      <div class="panel-header">
+        <div class="panel-title">Scan History</div>
+        <button class="clear-btn" onclick="clearHistory()">Clear All</button>
+      </div>
+      <div class="history-list" id="history-list"></div>
+    </div>
+
+  </div><!-- /.wrapper -->
+
+  <div class="toast" id="toast"></div>
+
+  <script src="script.js"></script>
 </body>
 </html>
-
